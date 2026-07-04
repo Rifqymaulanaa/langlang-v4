@@ -1,0 +1,19 @@
+{
+  "name": "langlang-prototype",
+  "version": "1.0.0",
+  "description": "Langlang App Prototype - Demo Kompetisi Bisnis",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y http-server -p 3000"
+  },
+  "keywords": [
+    "langlang",
+    "prototype",
+    "vanilla-js",
+    "sdgs",
+    "tourism"
+  ],
+  "author": "Daffa, Safira, Rifqy, Faline",
+  "license": "ISC",
+  "dependencies": {}
+}

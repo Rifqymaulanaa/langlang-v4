@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Mitra Pengelola Desa — Langlang</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .admin-grid-layout {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: var(--space-4);
+    }
+
+    .admin-stat-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      padding: var(--space-2);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .admin-stat-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gray-500);
+      text-transform: uppercase;
+    }
+
+    .admin-stat-value {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--primary-green);
+    }
+
+    /* Split column layouts for graphs & controls */
+    .admin-split-layout {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+
+    .admin-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+      padding: var(--space-3);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Ticket QR Code Scanner Simulation */
+    .scanner-view-box {
+      width: 100%;
+      height: 220px;
+      background: #0f172a;
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      border: 2px solid var(--gray-700);
+    }
+
+    .scanner-target-sight {
+      width: 140px;
+      height: 140px;
+      border: 3px dashed var(--accent-lime);
+      border-radius: var(--radius-md);
+      position: relative;
+      box-shadow: 0 0 10px rgba(111,207,61,0.3);
+    }
+
+    /* Simulated income chart */
+    .income-chart-svg {
+      width: 100%;
+      height: 200px;
+      background: var(--gray-50);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--gray-200);
+      padding: 10px;
+    }
+
+    /* Log rows */
+    .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .log-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      border-bottom: 1px dashed var(--gray-100);
+      padding-bottom: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .admin-grid-layout { grid-template-columns: repeat(2, 1fr); }
+      .admin-split-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .admin-header-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: var(--space-2) !important;
+      }
+      .admin-header-buttons {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+      h1.font-accent {
+        font-size: 1.8rem !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .admin-grid-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <section class="section" style="padding-top: var(--space-4);">
+    <div class="container">
+      
+      <!-- Admin header info -->
+      <div class="flex-between admin-header-flex" style="margin-bottom: var(--space-3); flex-wrap: wrap; gap: 12px;">
+        <div>
+          <div style="font-size: 0.9rem; color: var(--gray-500); font-weight: 600;">Mitra B2B Desa Adat &bull; Curug Cikaso</div>
+          <h1 class="font-accent" style="margin-top: 4px;">Dashboard Pengelola Desa</h1>
+        </div>
+        
+        <div class="admin-header-buttons" style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <!-- Reset button to simulate starting clean -->
+          <button class="btn btn-secondary btn-sm" id="admin-reset-db-btn">Atur Ulang Demo Database</button>
+          <span class="badge badge-eco" style="padding: 10px 16px; font-size: 0.8rem; font-weight: 700; height: fit-content;">Koneksi IoT: AKTIF</span>
+        </div>
+      </div>
+
+      <!-- 4 Statistics overview widgets (P2) -->
+      <div class="admin-grid-layout">
+        <!-- 1. Total visitors -->
+        <div class="admin-stat-card">
+          <span class="admin-stat-title">Pengunjung Hari Ini</span>
+          <div class="admin-stat-value" id="admin-stat-visitors">0 Orang</div>
+          <p style="font-size: 0.75rem; color: var(--gray-500);">Terdaftar via E-Ticketing</p>
+        </div>
+        
+        <!-- 2. Revenue -->
+        <div class="admin-stat-card">
+          <span class="admin-stat-title">Pendapatan Bulan Ini</span>
+          <div class="admin-stat-value" id="admin-stat-revenue" style="color: var(--primary-green);">Rp0</div>
+          <p style="font-size: 0.75rem; color: var(--gray-500);">Bagi Hasil Desa Adat 100%</p>
+        </div>
+        
+        <!-- 3. Quota -->
+        <div class="admin-stat-card">
+          <span class="admin-stat-title">Sisa Kuota Hari Ini</span>
+          <div class="admin-stat-value" id="admin-stat-quota" style="color: var(--gold-reward);">0 Slot</div>
+          <p style="font-size: 0.75rem; color: var(--gray-500);">Batas Overtourism Aman</p>
+        </div>
+
+        <!-- 4. Care donation -->
+        <div class="admin-stat-card">
+          <span class="admin-stat-title">Dana Donasi Masuk</span>
+          <div class="admin-stat-value" id="admin-stat-care" style="color: var(--sky-blue);">Rp0</div>
+          <p style="font-size: 0.75rem; color: var(--gray-500);">Transparansi Langlang Care</p>
+        </div>
+      </div>
+
+      <!-- Split layout: Revenue chart & QR ticket scanner -->
+      <div class="admin-split-layout">
+        
+        <!-- Left: Revenue Graph -->
+        <div class="admin-card">
+          <h3 class="font-accent" style="margin-bottom: var(--space-2); border-bottom: 2px solid var(--gray-100); padding-bottom: 8px;">
+            Grafik Pendapatan Mingguan (E-Ticketing)
+          </h3>
+          <!-- SVG Line Chart simulator (PRD 4.10) -->
+          <div class="income-chart-svg">
+            <svg viewBox="0 0 500 200" width="100%" height="100%">
+              <!-- Grid lines -->
+              <line x1="40" y1="30" x2="480" y2="30" stroke="#E5E7EB" stroke-width="1" />
+              <line x1="40" y1="80" x2="480" y2="80" stroke="#E5E7EB" stroke-width="1" />
+              <line x1="40" y1="130" x2="480" y2="130" stroke="#E5E7EB" stroke-width="1" />
+              <line x1="40" y1="170" x2="480" y2="170" stroke="#D1D5DB" stroke-width="2" />
+              
+              <!-- Left labels -->
+              <text x="5" y="35" fill="#9CA3AF" font-size="10">3.0 Jt</text>
+              <text x="5" y="85" fill="#9CA3AF" font-size="10">2.0 Jt</text>
+              <text x="5" y="135" fill="#9CA3AF" font-size="10">1.0 Jt</text>
+              <text x="5" y="175" fill="#9CA3AF" font-size="10">0</text>
+              
+              <!-- Bottom labels (Days) -->
+              <text x="55" y="190" fill="#6B7280" font-size="10" font-weight="700">Sen</text>
+              <text x="125" y="190" fill="#6B7280" font-size="10" font-weight="700">Sel</text>
+              <text x="195" y="190" fill="#6B7280" font-size="10" font-weight="700">Rab</text>
+              <text x="265" y="190" fill="#6B7280" font-size="10" font-weight="700">Kam</text>
+              <text x="335" y="190" fill="#6B7280" font-size="10" font-weight="700">Jum</text>
+              <text x="405" y="190" fill="#6B7280" font-size="10" font-weight="700">Sab</text>
+              <text x="460" y="190" fill="#6B7280" font-size="10" font-weight="700">Min</text>
+
+              <!-- Chart Line path (mock data points) -->
+              <path d="M 65 140 L 135 155 L 205 120 L 275 105 L 345 90 L 415 50 L 470 65" fill="none" stroke="var(--primary-green)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+              
+              <!-- Dots on chart points -->
+              <circle cx="65" cy="140" r="5" fill="var(--primary-green)" />
+              <circle cx="135" cy="155" r="5" fill="var(--primary-green)" />
+              <circle cx="205" cy="120" r="5" fill="var(--primary-green)" />
+              <circle cx="275" cy="105" r="5" fill="var(--primary-green)" />
+              <circle cx="345" cy="90" r="5" fill="var(--primary-green)" />
+              <circle cx="415" cy="50" r="5" fill="var(--accent-lime)" />
+              <circle cx="470" cy="65" r="5" fill="var(--primary-green)" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Right: Ticket Scanner Simulation -->
+        <div class="admin-card">
+          <h3 class="font-accent" style="margin-bottom: var(--space-2); border-bottom: 2px solid var(--gray-100); padding-bottom: 8px;">
+            Simulasi Tiket Scanner
+          </h3>
+          
+          <div class="scanner-view-box" style="position: relative;">
+            <!-- Active webcam simulation stream backdrop -->
+            <video id="admin-webcam-stream" style="position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; display:none; transform: scaleX(-1); z-index: 1;" autoplay playsinline></video>
+            <div class="scanner-target-sight" style="z-index: 2;">
+              <div class="scanner-line"></div>
+            </div>
+            <p style="font-size: 0.75rem; color: var(--gray-400); margin-top: 10px; z-index: 10;" id="scanner-status-text">Arahkan kamera ke QR Code Tiket digital.</p>
+          </div>
+
+          <div style="margin-top: 12px; display: flex; gap: 8px; flex-direction: column;">
+            <button class="btn btn-secondary btn-sm" id="admin-webcam-toggle-btn">📹 Aktifkan Kamera Scanner</button>
+            
+            <div style="border-top: 1px dashed var(--gray-200); padding-top: 10px; margin-top: 5px;">
+              <label class="form-label" style="font-size: 0.8rem;">Masukkan Kode Tiket manual (Simulasi Scan)</label>
+              <div style="display: flex; gap: 8px; margin-top: 4px;">
+                <input type="text" class="form-input" id="admin-scan-input" placeholder="LL-20260715-CIK..." style="padding: 8px; font-size: 0.85rem; margin-bottom: 0;">
+                <button class="btn btn-primary btn-sm" id="admin-scan-btn">Simulasi Scan</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Split layout: Quota and Smart Eco-Bin IoT stats -->
+      <div class="admin-split-layout">
+        
+        <!-- Left: Booking logs & Quota control -->
+        <div class="admin-card">
+          <div class="flex-between" style="border-bottom: 2px solid var(--gray-100); padding-bottom: 8px; margin-bottom: var(--space-2);">
+            <h3 class="font-accent">Log Booking & Kontrol Kuota</h3>
+            
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <label class="form-label" style="font-size: 0.8rem; margin-bottom: 0;">Status Tiket:</label>
+              <button class="btn btn-secondary btn-sm" id="admin-toggle-quota-btn" style="padding: 4px 10px; font-size: 0.75rem;">Buka Booking</button>
+            </div>
+          </div>
+
+          <div class="log-list" id="admin-bookings-log-container">
+            <!-- Dynamic bookings log injected here -->
+          </div>
+        </div>
+
+        <!-- Right: Smart Eco-Bin Monitor -->
+        <div class="admin-card">
+          <h3 class="font-accent" style="margin-bottom: var(--space-2); border-bottom: 2px solid var(--gray-100); padding-bottom: 8px;">
+            Smart Eco-Bin IoT Monitor
+          </h3>
+          
+          <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 10px;">
+            <div>
+              <div class="flex-between" style="font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">
+                <span>Kapasitas Volume Tempat Sampah</span>
+                <span id="ecobin-volume-pct" style="color: var(--coral-accent);">78% Penuh</span>
+              </div>
+              <div class="progress-container" style="height: 10px;">
+                <div class="progress-bar" id="ecobin-volume-bar" style="background-color: var(--coral-accent); width: 78%;"></div>
+              </div>
+            </div>
+
+            <div class="flex-between" style="font-size: 0.85rem; border-bottom: 1px dashed var(--gray-100); padding-bottom: 8px;">
+              <span>Total Botol Plastik Dibuang:</span>
+              <strong id="ecobin-bottles-count">1.452 Botol</strong>
+            </div>
+
+            <div class="flex-between" style="font-size: 0.85rem; border-bottom: 1px dashed var(--gray-100); padding-bottom: 8px;">
+              <span>Koin Digital Didistribusikan:</span>
+              <strong style="color: var(--primary-green);" id="ecobin-coins-count">36.300 Koin</strong>
+            </div>
+
+            <div style="text-align: center; background-color: var(--gray-50); border: 1px dashed var(--gray-300); border-radius: var(--radius-md); padding: 8px; font-size: 0.75rem; color: var(--gray-600);">
+              🔔 Sistem IoT: Tempat Sampah Pintar #3 (Dermaga) mendekati batas penuh. Petugas kebersihan telah dipemberitahukan otomatis.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

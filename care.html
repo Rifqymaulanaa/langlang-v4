@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Langlang Care — Berbagi Dampak Nyata</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .care-layout {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-3);
+    }
+
+    /* Campaign grid cards */
+    .campaign-list-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+      overflow: hidden;
+      margin-bottom: var(--space-3);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .campaign-banner-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .campaign-body {
+      padding: var(--space-3);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .campaign-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      border-top: 1px solid var(--gray-100);
+      padding-top: 10px;
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+    /* Side Panel Widgets */
+    .care-side-widget {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+      padding: var(--space-3);
+      margin-bottom: var(--space-3);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--gray-100);
+      padding-bottom: 8px;
+    }
+
+    .leaderboard-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .leaderboard-rank {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--gray-100);
+      font-weight: 800;
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .leaderboard-item:nth-child(1) .leaderboard-rank {
+      background: var(--gold-reward-light);
+      color: var(--gold-reward);
+    }
+
+    .leaderboard-item:nth-child(2) .leaderboard-rank {
+      background: var(--gray-200);
+      color: var(--gray-700);
+    }
+
+    /* Nominal selection grid */
+    .nominal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .nominal-btn {
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: 10px 4px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: center;
+      transition: var(--transition-fast);
+    }
+
+    .nominal-btn.active, .nominal-btn:hover {
+      border-color: var(--primary-green);
+      background-color: var(--primary-green-light);
+      color: var(--primary-green);
+    }
+
+    /* Timeline Laporan */
+    .report-timeline {
+      position: relative;
+      padding-left: 24px;
+      border-left: 2px solid var(--gray-200);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      margin-top: var(--space-2);
+    }
+
+    .timeline-node {
+      position: relative;
+    }
+
+    .timeline-node::before {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: var(--primary-green);
+      border: 3px solid var(--white);
+      border-radius: 50%;
+      left: -31px;
+      top: 6px;
+      box-shadow: 0 0 0 2px var(--primary-green);
+    }
+
+    .timeline-date {
+      font-size: 0.8rem;
+      color: var(--primary-green);
+      font-weight: 700;
+    }
+
+    .timeline-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 2px 0 6px 0;
+    }
+
+    .timeline-desc {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .care-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .campaign-banner-img { height: 160px; }
+      .care-side-widget { padding: var(--space-2); }
+      .nominal-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <section class="section" style="padding-top: var(--space-4);">
+    <div class="container">
+      
+      <!-- Care Header Intro -->
+      <div style="margin-bottom: var(--space-3); text-align: center;">
+        <span class="badge badge-eco">Tujuan SDGs Ke-6 & Ke-12</span>
+        <h1 class="font-accent" style="font-size: 3rem; margin-top: 4px;">Langlang Care</h1>
+        <p style="color: var(--gray-500); max-width: 600px; margin: 0 auto;">Donasi transparan pariwisata yang disalurkan 100% untuk membiayai infrastruktur dasar, kelestarian ekologi, dan kesejahteraan masyarakat lokal desa wisata.</p>
+      </div>
+
+      <!-- Before/After Hero Showcase -->
+      <div class="card" style="display: flex; flex-direction: column; border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--gray-200); box-shadow: var(--shadow-lg); margin-bottom: var(--space-4);">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; position: relative; min-height: 200px;">
+          <div style="position: relative;">
+            <img src="https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&w=500&q=80" alt="Sebelum Sanitasi Cikaso" style="width: 100%; height: 100%; min-height: 200px; object-fit: cover;">
+            <div class="badge" style="position: absolute; bottom: 12px; left: 12px; background: rgba(0,0,0,0.6); color: var(--white); font-size: 0.65rem; padding: 3px 7px;">Sebelum Donasi</div>
+          </div>
+          <div style="position: relative;">
+            <img src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=500&q=80" alt="Sesudah Pembangunan Cikaso" style="width: 100%; height: 100%; min-height: 200px; object-fit: cover;">
+            <div class="badge" style="position: absolute; bottom: 12px; left: 12px; background: var(--primary-green); color: var(--white); font-size: 0.65rem; padding: 3px 7px;">Sesudah Donasi</div>
+          </div>
+        </div>
+        <div style="padding: var(--space-3); display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+          <span class="badge badge-hidden-gem" style="width: fit-content;">Dampak Terkini</span>
+          <h3 class="font-accent" style="font-size: 1.8rem; line-height: 1.2;">Pengolahan Sampah Smart Eco-Bin Penglipuran</h3>
+          <p style="font-size: 0.95rem; color: var(--gray-600);">
+            Melalui sumbangan dari 1.780 traveler peduli bumi, kami telah mengoperasikan stasiun pemilah daur ulang otomatis di sepanjang jalan adat Desa Penglipuran.
+          </p>
+          <div style="display: flex; gap: 16px; font-size: 0.85rem; font-weight: 700; color: var(--gray-500); margin-top: 4px;">
+            <div>Poin Dibagikan: <strong style="color: var(--primary-green);">+45.000 Poin</strong></div>
+            <div>Sampah Didaur Ulang: <strong style="color: var(--primary-green);">1.2 Ton Plastik</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout Columns -->
+      <div class="care-layout">
+        
+        <!-- Left Column: Campaigns & Timeline -->
+        <div>
+          <h2 class="font-accent" style="margin-bottom: var(--space-2);">Kampanye Aktif Target SDGs</h2>
+          <div id="care-campaigns-list">
+            <!-- Active campaign cards dynamically injected -->
+          </div>
+
+          <!-- Laporan Timeline (P1) -->
+          <div class="card" style="padding: var(--space-3); margin-top: var(--space-4);">
+            <h3 class="font-accent" style="margin-bottom: var(--space-2); border-bottom: 2px solid var(--gray-100); padding-bottom: 8px;">
+              Laporan Realisasi & Transparansi Dana
+            </h3>
+            
+            <div class="report-timeline" id="care-timeline-reports">
+              <!-- Timeline updates injected by care.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: User Dashboard & Donate Widget -->
+        <div>
+          
+          <!-- Quick Donation Widget -->
+          <div class="care-side-widget" id="direct-donation-widget">
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Donasi Langsung Cepat</h3>
+            <p style="font-size: 0.8rem; color: var(--gray-500); margin-bottom: 12px;">Pilih nominal dan kampanye target untuk mendukung pelestarian pariwisata.</p>
+            
+            <form id="care-direct-donate-form">
+              <div class="form-group">
+                <label class="form-label" style="font-size: 0.8rem;">Pilih Program Target</label>
+                <select class="form-input form-select" id="donate-select-campaign" style="padding: 8px 32px 8px 12px; font-size: 0.85rem;" required>
+                  <!-- Options generated by care.js -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" style="font-size: 0.8rem;">Nominal Donasi (Rupiah)</label>
+                <!-- Quick select grid -->
+                <div class="nominal-grid">
+                  <button type="button" class="nominal-btn active" data-value="5000">5K</button>
+                  <button type="button" class="nominal-btn" data-value="10000">10K</button>
+                  <button type="button" class="nominal-btn" data-value="25000">25K</button>
+                  <button type="button" class="nominal-btn" data-value="50000">50K</button>
+                </div>
+                <input type="number" class="form-input" id="donate-custom-nominal" value="5000" min="1000" placeholder="Minimal Rp1.000" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom: var(--space-2);">
+                <label style="display: flex; gap: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                  <input type="checkbox" id="donate-anonymous-checkbox" style="width: 18px; height: 18px; accent-color: var(--primary-green);">
+                  <span>Donasi sebagai Anonim</span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-full">Salurkan Donasi Aman</button>
+            </form>
+          </div>
+
+          <!-- Dampak Anda (Personal Stats) -->
+          <div class="care-side-widget">
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Dampak Hijau Anda</h3>
+            
+            <div style="background-color: var(--primary-green-light); border-radius: var(--radius-md); padding: 12px; display: flex; align-items: center; gap: 12px; border: 1px solid rgba(27, 107, 58, 0.15);">
+              <div style="font-size: 1.8rem;">🌱</div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--gray-600); font-weight: 600;">Total Kontribusi Donasi</div>
+                <div style="font-size: 1.15rem; font-weight: 800; color: var(--primary-green);" id="user-total-donations">Rp0</div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 12px; font-size: 0.85rem; color: var(--gray-600);" id="user-donations-history-list">
+              <!-- Log list of user donations -->
+              <p style="text-align: center; color: var(--gray-400); padding: 10px 0;">Belum ada riwayat donasi langsung.</p>
+            </div>
+          </div>
+
+          <!-- Leaderboard Donatur (P1) -->
+          <div class="care-side-widget">
+            <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Leaderboard Donatur</h3>
+            <p style="font-size: 0.8rem; color: var(--gray-500); margin-bottom: 12px;">Terima kasih kepada pahlawan traveler pelindung kelestarian bumi.</p>
+            
+            <div class="leaderboard-list" id="leaderboard-container">
+              <!-- Leaderboard items injected by care.js -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Modal Payment Simulator for Care donation -->
+  <div class="modal-overlay" id="care-loading-overlay">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-body payment-loading-modal">
+        <div class="spinner"></div>
+        <h3 class="font-accent">Memverifikasi Donasi...</h3>
+        <p style="color: var(--gray-500); font-size: 0.85rem;">Donasi Anda dicatat aman di laporan publikasi transparansi dana desa wisata.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/care.js"></script>
+</body>
+</html>

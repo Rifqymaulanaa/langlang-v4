@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Destinasi — Langlang</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    /* Carousel styling */
+    .detail-hero-carousel {
+      position: relative;
+      height: 480px;
+      width: 100%;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: var(--space-4);
+      background-color: var(--gray-200);
+    }
+    
+    .carousel-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      z-index: 1;
+    }
+
+    .carousel-slide.active {
+      opacity: 1;
+      z-index: 2;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .carousel-controls {
+      position: absolute;
+      bottom: var(--space-2);
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: var(--space-1);
+    }
+
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .carousel-dot.active {
+      background: var(--white);
+      transform: scale(1.2);
+    }
+
+    /* Layout detail */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: var(--space-4);
+      align-items: start;
+    }
+
+    .detail-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .booking-card {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-xl);
+      padding: var(--space-3);
+      position: sticky;
+      top: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    /* Weather Widget */
+    .weather-widget {
+      background: linear-gradient(135deg, var(--white) 0%, var(--gray-50) 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      padding: var(--space-2);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-2);
+      align-items: center;
+    }
+
+    .weather-icon-lg {
+      width: 48px;
+      height: 48px;
+      color: var(--sky-blue);
+    }
+
+    .weather-forecast-days {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-1);
+      border-top: 1px solid var(--gray-100);
+      padding-top: var(--space-1);
+      margin-top: var(--space-1);
+    }
+
+    .forecast-day-card {
+      text-align: center;
+      font-size: 0.8rem;
+    }
+
+    /* Coupon/Discount Badge */
+    .discount-badge-alert {
+      background: var(--coral-accent-light);
+      border: 1px dashed var(--coral-accent);
+      color: var(--coral-accent);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    /* Spotlight UMKM grid */
+    .umkm-spotlight-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-2);
+    }
+
+    .spotlight-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+      padding: var(--space-1);
+      display: flex;
+      gap: 8px;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .spotlight-card:hover {
+      box-shadow: var(--shadow-sm);
+      border-color: var(--primary-green);
+    }
+
+    .spotlight-img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+    }
+
+    /* UGC Form & Comments */
+    .ugc-feed {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .ugc-item {
+      border-bottom: 1px solid var(--gray-100);
+      padding-bottom: var(--space-2);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ugc-item:last-child {
+      border-bottom: none;
+    }
+
+    .ugc-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .detail-grid { grid-template-columns: 1fr; }
+      .booking-card { position: static; }
+      .detail-hero-carousel { height: 260px; border-radius: var(--radius-lg); margin-bottom: var(--space-3); }
+    }
+
+    @media (max-width: 600px) {
+      .weather-widget {
+        grid-template-columns: 1fr;
+        gap: var(--space-1);
+      }
+      .weather-icon-lg {
+        width: 36px;
+        height: 36px;
+      }
+      .detail-grid {
+        gap: var(--space-3);
+      }
+      .umkm-spotlight-grid {
+        grid-template-columns: 1fr;
+      }
+      .discount-badge-alert {
+        font-size: 0.8rem;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <section class="section" style="padding-top: var(--space-4);" id="destination-detail-page">
+    <div class="container">
+      
+      <!-- Navigation breadcrumb -->
+      <div style="margin-bottom: var(--space-2); font-size: 0.9rem; color: var(--gray-500); font-weight: 600;">
+        <a href="index.html" style="color: var(--primary-green);">Beranda</a> &nbsp;/&nbsp; 
+        <a href="explore.html" style="color: var(--primary-green);">Explore</a> &nbsp;/&nbsp; 
+        <span id="breadcrumb-dest-name">Detail Destinasi</span>
+      </div>
+
+      <!-- Carousel Hero (P0) -->
+      <div class="detail-hero-carousel" id="carousel-container">
+        <!-- Slides and Dots will be injected by destination.js -->
+        <div class="carousel-controls" id="carousel-dots-container"></div>
+      </div>
+
+      <!-- Main Columns Grid -->
+      <div class="detail-grid">
+        
+        <!-- Left Side: Content & Details -->
+        <div class="detail-info">
+          
+          <!-- Header Info -->
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span class="badge" id="dest-badge-category">Hidden Gem</span>
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--primary-green);" id="dest-type-label">Kategori</span>
+            </div>
+            
+            <h1 class="font-accent" id="dest-title" style="font-size: 2.8rem; line-height: 1.2;">Nama Destinasi</h1>
+            
+            <div style="display: flex; align-items: center; gap: 16px; margin-top: 6px; font-size: 0.95rem; color: var(--gray-600);">
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <div class="rating-stars" id="dest-rating-stars"></div>
+                <span style="font-weight: 700; color: var(--deep-charcoal);" id="dest-rating-value">0.0</span>
+                <span id="dest-reviews-count">(0 ulasan)</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 4px;">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <span id="dest-location-text">Lokasi Desa</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Virtual Tour Button (P0) -->
+          <div style="background: linear-gradient(135deg, var(--deep-charcoal) 0%, var(--deep-charcoal-light) 100%); padding: var(--space-3); border-radius: var(--radius-lg); color: var(--white); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-2);">
+            <div>
+              <h3 style="color: var(--white); margin-bottom: 4px;">Eksplorasi Virtual 360°</h3>
+              <p style="color: var(--gray-300); font-size: 0.9rem; max-width: 450px;">Lihat keindahan panorama alam dari berbagai sudut pandang (hotspot fauna & area piknik) sebelum Anda berkunjung.</p>
+            </div>
+            <a href="" class="btn btn-primary" id="go-virtual-tour-btn" style="background-color: var(--accent-lime); color: var(--deep-charcoal);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              Masuk Virtual Tour
+            </a>
+          </div>
+
+          <!-- AI Cuaca Pintar Widget (P0) -->
+          <div class="weather-widget" id="weather-detail-widget">
+            <div class="flex-center" style="background: var(--white); border-radius: var(--radius-md); border: 1px solid var(--gray-200); width: 64px; height: 64px;" id="weather-icon-box">
+              <!-- SVG Icon dynamically -->
+            </div>
+            <div>
+              <div class="flex-between">
+                <span class="form-label" style="font-size: 0.95rem;">AI Cuaca Pintar Hari Ini</span>
+                <span class="badge badge-cuaca" id="weather-warning-badge" style="font-size: 0.7rem;">Status Aman</span>
+              </div>
+              <p style="font-size: 0.9rem; margin-top: 2px;">
+                Suhu udara saat ini <strong id="weather-temp-value">25°C</strong> dengan kondisi <strong id="weather-desc-value">Berawan</strong>.
+              </p>
+              
+              <!-- Conditional Discount Info strip -->
+              <div id="weather-discount-strip" style="display: none;">
+                <div class="discount-badge-alert">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a2 2 0 10-2 2h2zm0 0h4m-4 0H8m12 3v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0l-8 4-8-4" /></svg>
+                  <span>Diskon Cuaca: Hemat <span id="weather-discount-pct">0%</span> Harga Tiket (Otomatis Terpotong!)</span>
+                </div>
+              </div>
+
+              <!-- 3 Day Forecast Grid -->
+              <div class="weather-forecast-days" id="weather-forecast-container">
+                <!-- Forecast items injected by destination.js -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs Switcher Section (P0) -->
+          <div>
+            <div class="tabs">
+              <button class="tab-btn active" data-tab="tab-desc">Deskripsi</button>
+              <button class="tab-btn" data-tab="tab-facilities">Fasilitas</button>
+              <button class="tab-btn" data-tab="tab-access">Akses & Rute</button>
+              <button class="tab-btn" data-tab="tab-rules">Peraturan Desa</button>
+            </div>
+            
+            <div class="tab-pane active" id="tab-desc">
+              <p id="dest-desc-text" style="font-size: 1rem; line-height: 1.7;"></p>
+            </div>
+            
+            <div class="tab-pane" id="tab-facilities">
+              <ul id="dest-facilities-list" style="padding-left: var(--space-2); display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-weight: 500;">
+                <!-- list -->
+              </ul>
+            </div>
+            
+            <div class="tab-pane" id="tab-access">
+              <p id="dest-access-text" style="font-size: 1rem; line-height: 1.7;"></p>
+            </div>
+            
+            <div class="tab-pane" id="tab-rules">
+              <ul id="dest-rules-list" style="padding-left: var(--space-2); display: flex; flex-direction: column; gap: 8px; color: var(--coral-accent); font-weight: 600;">
+                <!-- list -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- UMKM Spotlight (P1) -->
+          <div style="border-top: 1px solid var(--gray-200); padding-top: var(--space-4);">
+            <div class="flex-between" style="margin-bottom: var(--space-2);">
+              <h3 class="font-accent">Produk UMKM Unggulan Desa</h3>
+              <a href="marketplace.html" style="color: var(--primary-green); font-size: 0.9rem; font-weight: 700;">Lihat Semua</a>
+            </div>
+            
+            <div class="umkm-spotlight-grid" id="umkm-spotlight-container">
+              <!-- UMKM Spotlight cards dynamically -->
+            </div>
+          </div>
+
+          <!-- UGC Corner (P0) -->
+          <div style="border-top: 1px solid var(--gray-200); padding-top: var(--space-4);">
+            <h3 class="font-accent" style="margin-bottom: var(--space-2);">Ulasan Pengunjung</h3>
+            
+            <!-- Add review form -->
+            <form id="ugc-review-form" style="background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--gray-200); padding: var(--space-2); margin-bottom: var(--space-3); display: flex; flex-direction: column; gap: var(--space-1);">
+              <h4 style="font-size: 0.95rem;">Tulis Ulasan Anda</h4>
+              <div class="form-group" style="margin-bottom: 0;">
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 0.85rem; font-weight: 700; color: var(--gray-600);">Rating:</span>
+                  <div class="rating-stars" id="input-stars-rating" style="cursor: pointer; font-size: 1.2rem;">
+                    <!-- Interactive stars will be rendered by destination.js -->
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: var(--space-1);">
+                <textarea id="review-comment-input" class="form-input" rows="3" placeholder="Bagikan pengalaman menarik Anda di sini (akses, cuaca, keramahan lokal)..." required></textarea>
+              </div>
+              <div class="flex-between">
+                <span style="font-size: 0.8rem; color: var(--gray-400);">Ulasan Anda membantu program wisata berkelanjutan SDGs.</span>
+                <button type="submit" class="btn btn-primary btn-sm">Kirim Ulasan</button>
+              </div>
+            </form>
+
+            <div class="ugc-feed" id="ugc-reviews-feed-container">
+              <!-- Dynamically loaded reviews -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Side: Booking Card (P0) -->
+        <div class="booking-card">
+          
+          <div class="flex-between">
+            <span class="form-label" style="font-size: 0.85rem; color: var(--gray-500);">Harga Mulai</span>
+            <div id="booking-price-display" style="font-family: var(--font-display); font-weight: 800; font-size: 1.4rem; color: var(--primary-green);">Rp0</div>
+          </div>
+
+          <!-- Kuota Harian Widget -->
+          <div style="background: var(--primary-green-light); border: 1px solid rgba(27, 107, 58, 0.15); border-radius: var(--radius-md); padding: 10px;">
+            <div class="flex-between" style="font-size: 0.85rem; font-weight: 700; color: var(--primary-green); margin-bottom: 4px;">
+              <span>Sisa Kuota Hari Ini</span>
+              <span id="booking-quota-count">0 / 0 Slot</span>
+            </div>
+            <!-- Progress bar -->
+            <div class="progress-container" style="background-color: rgba(27, 107, 58, 0.1);">
+              <div class="progress-bar" id="booking-quota-progress-bar"></div>
+            </div>
+            
+            <div class="flex-between" style="font-size: 0.75rem; color: var(--gray-500); margin-top: 6px;">
+              <span>Tutup Pemesanan Hari Ini</span>
+              <span style="color: var(--coral-accent); font-weight: 700;" id="booking-countdown-timer">00:00:00</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 4px; border-bottom: 1px solid var(--gray-100); padding-bottom: 8px;">
+            <div class="form-group">
+              <label class="form-label">Tanggal Kunjungan</label>
+              <input type="date" class="form-input" id="booking-visit-date" required>
+            </div>
+          </div>
+
+          <!-- Stepper ticket selectors -->
+          <div style="display: flex; flex-direction: column; gap: var(--space-1); margin-top: 4px;">
+            <!-- Dewasa -->
+            <div class="flex-between">
+              <div>
+                <div style="font-weight: 700; font-size: 0.9rem;">Dewasa</div>
+                <div style="font-size: 0.75rem; color: var(--gray-500);" id="ticket-dewasa-price-label">Rp0</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="btn btn-secondary btn-sm" id="btn-dec-dewasa" style="padding: 2px 10px; font-size: 1rem; border-radius: 50%;">-</button>
+                <span id="count-dewasa" style="font-weight: 700; width: 15px; text-align: center;">1</span>
+                <button class="btn btn-secondary btn-sm" id="btn-inc-dewasa" style="padding: 2px 10px; font-size: 1rem; border-radius: 50%;">+</button>
+              </div>
+            </div>
+
+            <!-- Anak -->
+            <div class="flex-between">
+              <div>
+                <div style="font-weight: 700; font-size: 0.9rem;">Anak-Anak</div>
+                <div style="font-size: 0.75rem; color: var(--gray-500);" id="ticket-anak-price-label">Rp0</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="btn btn-secondary btn-sm" id="btn-dec-anak" style="padding: 2px 10px; font-size: 1rem; border-radius: 50%;">-</button>
+                <span id="count-anak" style="font-weight: 700; width: 15px; text-align: center;">0</span>
+                <button class="btn btn-secondary btn-sm" id="btn-inc-anak" style="padding: 2px 10px; font-size: 1rem; border-radius: 50%;">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Langlang Care Donation integration (P0) -->
+          <div style="background-color: var(--gray-50); border: 1px solid var(--gray-200); border-radius: var(--radius-md); padding: 10px; margin-top: 6px;">
+            <label style="display: flex; gap: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+              <input type="checkbox" id="booking-care-donate-checkbox" style="width: 18px; height: 18px; accent-color: var(--primary-green);" checked>
+              <span>Bulatkan Donasi Langlang Care</span>
+            </label>
+            <div style="font-size: 0.8rem; color: var(--gray-500); margin-left: 26px; margin-top: 4px;">
+              Donasikan <strong>Rp10.000</strong> untuk penyediaan fasilitas toilet sanitasi bersih desa ini.
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--gray-100); padding-top: var(--space-1); margin-top: var(--space-1);">
+            <div class="flex-between" style="font-weight: 800; font-size: 1.1rem; margin-bottom: var(--space-2);">
+              <span>Total Biaya</span>
+              <span id="booking-total-display" style="color: var(--primary-green);">Rp0</span>
+            </div>
+            <button class="btn btn-primary btn-full btn-lg" id="checkout-booking-btn">Beli Tiket Resmi</button>
+            <p style="font-size: 0.75rem; text-align: center; color: var(--gray-500); margin-top: 8px; font-weight: 600;">
+              🛡️ Anti-Pungli: Tiket ini resmi & terdaftar di Desa Adat.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/destination.js"></script>
+</body>
+</html>

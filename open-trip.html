@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Trip & Komunitas — Langlang</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .trip-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-3);
+    }
+
+    .trip-sidebar {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      padding: var(--space-3);
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .trip-main {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    /* Guide mini profile inside card */
+    .guide-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gray-600);
+      margin-top: 4px;
+    }
+
+    .guide-chip img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Challenge Banner */
+    .challenge-banner {
+      background: linear-gradient(135deg, var(--gold-reward) 0%, #D97706 100%);
+      color: var(--white);
+      border-radius: var(--radius-xl);
+      padding: var(--space-3);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    /* Community feed styling */
+    .feed-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-2);
+    }
+
+    .feed-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      padding: var(--space-2);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feed-user-img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .feed-content-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .trip-layout { grid-template-columns: 1fr; }
+      .trip-sidebar { position: static; width: 100%; display: none; }
+      .trip-sidebar.mobile-visible { display: flex; }
+      .feed-grid { grid-template-columns: 1fr; }
+      .mobile-filter-toggle-btn { display: flex; }
+    }
+
+    @media (max-width: 600px) {
+      .challenge-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
+        padding: var(--space-2);
+      }
+      .challenge-banner .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <section class="section" style="padding-top: var(--space-4);">
+    <div class="container">
+      
+      <!-- Top breadcrumbs -->
+      <div style="margin-bottom: var(--space-2); font-size: 0.9rem; color: var(--gray-500); font-weight: 600;">
+        <a href="index.html" style="color: var(--primary-green);">Beranda</a> &nbsp;/&nbsp; Open Trip & Komunitas
+      </div>
+
+      <!-- Challenge Banner SDGs (PRD 4.9) -->
+      <div class="challenge-banner animate-slide-up">
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <div style="font-size: 2.5rem;">🏆</div>
+          <div>
+            <h3 style="color: var(--white); font-size: 1.25rem;">#InovasiHiddenGemChallenge</h3>
+            <p style="color: rgba(255,255,255,0.9); font-size: 0.85rem; margin-top: 2px;">
+              Ikuti challenge mempublikasikan video edukasi ekowisata desa pilihan di TikTok/Reels Anda. Dapatkan <strong>1.000 Eco-Points gratis</strong> + Voucer Menginap Adat Wae Rebo!
+            </p>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="background-color: var(--white); border-color: var(--white); color: var(--gold-reward); font-weight: 800; border-radius: var(--radius-md);">
+          Daftar Challenge
+        </button>
+      </div>
+
+      <!-- Mobile Filter Toggle Button -->
+      <button class="mobile-filter-toggle-btn" id="trip-filter-toggle" onclick="document.querySelector('.trip-sidebar').classList.toggle('mobile-visible'); this.textContent = document.querySelector('.trip-sidebar').classList.contains('mobile-visible') ? '⬆ Sembunyikan Filter' : '⚙ Filter Paket'">
+        ⚙ Filter Paket
+      </button>
+
+      <!-- Layout Grid -->
+      <div class="trip-layout">
+        
+        <!-- Sidebar Filters -->
+        <aside class="trip-sidebar">
+          <div>
+            <div class="filter-section-title">Saring Paket Trip</div>
+            <div class="form-group">
+              <label class="form-label" style="font-size: 0.8rem;">Cari Destinasi</label>
+              <input type="text" class="form-input" id="trip-search-dest" placeholder="Misal: Wae Rebo, Ijen...">
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" style="font-size: 0.8rem;">Budget Maksimal</label>
+              <select class="form-input form-select" id="trip-max-budget">
+                <option value="all">Semua Harga</option>
+                <option value="500000">&lt; Rp500.000</option>
+                <option value="1500000">&lt; Rp1.500.000</option>
+                <option value="3000000">&lt; Rp3.000.000</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <div class="filter-section-title">Grup & Komunitas</div>
+            <div class="filter-checkbox-group">
+              <label class="filter-checkbox-item">
+                <input type="checkbox" class="trip-filter-type" value="solo" checked> Solo Traveler
+              </label>
+              <label class="filter-checkbox-item">
+                <input type="checkbox" class="trip-filter-type" value="couple" checked> Couple Trip
+              </label>
+              <label class="filter-checkbox-item">
+                <input type="checkbox" class="trip-filter-type" value="grup" checked> Group Adventure
+              </label>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary btn-full btn-sm" id="trip-reset-filters-btn">Setel Ulang Filter</button>
+        </aside>
+
+        <!-- Main Content area -->
+        <main class="trip-main">
+          
+          <div class="tabs">
+            <button class="tab-btn active" data-tab="tab-list-trips">Paket Open Trip Komunitas</button>
+            <button class="tab-btn" data-tab="tab-community-feed">Community Feed Traveler</button>
+          </div>
+
+          <!-- Tab Pane: Trip Listing (P1) -->
+          <div class="tab-pane active" id="tab-list-trips">
+            <div class="grid grid-2" id="open-trips-container">
+              <!-- Injected dynamically by open-trip.js -->
+            </div>
+          </div>
+
+          <!-- Tab Pane: Community Feed (P1) -->
+          <div class="tab-pane" id="tab-community-feed">
+            <div class="feed-grid" id="community-feed-container">
+              <!-- UGC posts injected dynamically -->
+            </div>
+          </div>
+
+        </main>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- TRIP DETAIL MODAL (P1) -->
+  <div class="modal-overlay" id="trip-detail-modal-overlay">
+    <div class="modal" style="max-width: 600px;">
+      <button class="modal-close" id="trip-modal-close-btn">&times;</button>
+      
+      <div class="modal-header">
+        <span class="badge badge-hidden-gem" id="modal-trip-date">Tanggal Trip</span>
+        <h2 class="font-accent" id="modal-trip-title" style="font-size: 1.8rem; margin-top: 4px;">Nama Paket Open Trip</h2>
+      </div>
+
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: var(--space-2);">
+        <img id="modal-trip-image" src="" alt="" style="width: 100%; height: 220px; object-fit: cover; border-radius: var(--radius-md);">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;">
+          <div>
+            <h4 style="font-size: 0.95rem; margin-bottom: 4px; color: var(--primary-green);">Guide Lokal Kami:</h4>
+            <div class="guide-chip">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary-green-light); color: var(--primary-green); font-weight: 800;" class="flex-center" id="modal-trip-guide-initial">JS</div>
+              <div>
+                <div style="font-weight: 700;" id="modal-trip-guide-name">Jaka Satria</div>
+                <div class="rating-stars" style="font-size: 0.75rem;" id="modal-trip-guide-rating">⭐ 4.9 (Local Expert)</div>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <h4 style="font-size: 0.95rem; margin-bottom: 4px; color: var(--primary-green);">Harga Paket (All-In):</h4>
+            <strong style="font-size: 1.35rem; color: var(--primary-green);" id="modal-trip-price">Rp1.200.000</strong>
+            <div style="font-size: 0.75rem; color: var(--coral-accent); font-weight: 700;" id="modal-trip-quota">Sisa 4 Slot Tersisa</div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--gray-100); padding-top: 10px; margin-top: 6px;">
+          <h4 style="font-size: 0.95rem; margin-bottom: 6px;">Itinerary Harian</h4>
+          <ol style="padding-left: var(--space-2); font-size: 0.85rem; color: var(--gray-600); display: flex; flex-direction: column; gap: 6px;" id="modal-trip-itinerary">
+            <!-- list -->
+          </ol>
+        </div>
+
+        <div style="border-top: 1px solid var(--gray-100); padding-top: 10px;">
+          <h4 style="font-size: 0.95rem; margin-bottom: 4px;">Fasilitas Termasuk</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.85rem; color: var(--gray-600); font-weight: 500;" id="modal-trip-includes">
+            <!-- list -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-trip-close-footer-btn">Kembali</button>
+        <button class="btn btn-primary" id="modal-trip-join-btn">Gabung Open Trip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/open-trip.js"></script>
+</body>
+</html>

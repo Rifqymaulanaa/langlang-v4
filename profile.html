@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eco-Dashboard Anda — Langlang</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <style>
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: var(--space-4);
+      margin-top: var(--space-3);
+    }
+
+    /* Left pane profile info */
+    .profile-card-left {
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+      padding: var(--space-3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      height: fit-content;
+    }
+
+    .profile-avatar-wrapper {
+      position: relative;
+      width: 110px;
+      height: 110px;
+    }
+
+    .profile-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary-green);
+    }
+
+    .profile-level-badge {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--primary-green);
+      color: var(--white);
+      white-space: nowrap;
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-weight: 800;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Referral Box */
+    .referral-box {
+      width: 100%;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Virtual tree grow simulator box (PRD 4.8) */
+    .tree-simulator-container {
+      background: linear-gradient(180deg, #eefaf2 0%, #d8f3e0 100%);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(27, 107, 58, 0.15);
+      padding: var(--space-3);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+    }
+
+    /* Virtual Tree CSS/SVG drawings depending on stage */
+    .virtual-tree-box {
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      margin: var(--space-2) auto;
+    }
+
+    .tree-stage-art {
+      width: 100px;
+      height: 100px;
+      transition: transform 0.5s ease;
+    }
+
+    /* Eco-Points ring summary dashboard */
+    .eco-stats-deck {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: var(--space-3);
+    }
+
+    .eco-stat-item-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .eco-stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background-color: var(--primary-green-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    /* Achievement collections badges */
+    .badges-collection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .achievement-badge-card {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .achievement-icon {
+      font-size: 2.2rem;
+      line-height: 1.1;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .profile-layout { grid-template-columns: 1fr; }
+      .eco-stats-deck { grid-template-columns: 1fr; }
+      .badges-collection-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .profile-layout { gap: var(--space-3); margin-top: var(--space-2); }
+      .profile-card-left { padding: var(--space-2); }
+      .eco-stats-deck { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .eco-stat-item-card { padding: 10px; gap: 8px; }
+      .badges-collection-grid { grid-template-columns: repeat(3, 1fr); }
+      .referral-box { flex-wrap: wrap; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Placeholder -->
+  <div id="header-placeholder"></div>
+
+  <section class="section" style="padding-top: var(--space-4);">
+    <div class="container">
+      
+      <!-- Top breadcrumbs -->
+      <div style="margin-bottom: var(--space-2); font-size: 0.9rem; color: var(--gray-500); font-weight: 600;">
+        <a href="index.html" style="color: var(--primary-green);">Beranda</a> &nbsp;/&nbsp; Eco-Dashboard Profil
+      </div>
+
+      <h1 class="font-accent" style="margin-bottom: var(--space-3);">Eco-Dashboard Profil Traveler</h1>
+
+      <!-- Profile Grid Layout -->
+      <div class="profile-layout">
+        
+        <!-- Left Column: User details, Level & Referrals -->
+        <aside class="profile-card-left">
+          
+          <div class="profile-avatar-wrapper">
+            <img class="profile-avatar-img" id="user-profile-avatar" src="" alt="">
+            <span class="profile-level-badge" id="user-profile-level">Eco Explorer</span>
+          </div>
+
+          <div>
+            <h2 id="user-profile-name" style="font-size: 1.4rem;">Ari Wibowo</h2>
+            <span style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600; display: block; word-break: break-word;">Anggota Wisatawan Hijau sejak 2026</span>
+          </div>
+
+          <!-- Referral Box (PRD 4.8) -->
+          <div style="width: 100%; text-align: left;">
+            <label class="form-label" style="font-size: 0.8rem; color: var(--gray-500);">KODE REFERRAL:</label>
+            <div class="referral-box">
+              <strong id="user-referral-code" style="color: var(--deep-charcoal); letter-spacing: 0.05em;">LANGLANG-AR1W</strong>
+              <button class="btn btn-secondary btn-sm" id="copy-referral-btn" style="padding: 4px 8px; font-size: 0.75rem;">Salin</button>
+            </div>
+          </div>
+
+          <!-- Smart Eco-Bin scanning simulation button (PRD 4.8) -->
+          <div style="width: 100%; border-top: 1px solid var(--gray-200); padding-top: 16px;">
+            <button class="btn btn-primary btn-full" id="scan-ecobin-trigger-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="margin-right: 4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" /></svg>
+              Scan Botol Eco-Bin (+25 Poin)
+            </button>
+            <p style="font-size: 0.75rem; color: var(--gray-500); margin-top: 6px;">Simulasikan pembuangan botol plastik di tempat sampah pintar desa adat.</p>
+          </div>
+
+        </aside>
+
+        <!-- Right Column: Virtual Tree, Points Summary & Travel logs -->
+        <main style="display: flex; flex-direction: column; gap: var(--space-4);">
+          
+          <!-- Virtual Tree Simulator card (P1 Gamification) -->
+          <div class="tree-simulator-container">
+            <div style="text-align: left; width: 100%;">
+              <span class="badge badge-eco" style="background-color: var(--primary-green); color: var(--white);">Gamifikasi Tanam Pohon</span>
+              <h3 class="font-accent" style="margin-top: 4px; color: var(--primary-green-hover);">Tumbuhkan Pohon Virtual Hijau Anda</h3>
+              <p style="font-size: 0.85rem; color: var(--gray-600); max-width: 580px;">Setiap kali poin Anda bertambah dari e-ticketing bebas pungli, donasi Care, atau scan botol plastik, pohon digital Anda tumbuh! Capai Level Earth Guardian untuk menanam pohon fisik asli di TN Manusela Maluku.</p>
+            </div>
+
+            <!-- Virtual Tree SVG/CSS drawing canvas -->
+            <div class="virtual-tree-box">
+              <svg class="tree-stage-art tree-growing" id="virtual-tree-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- SVG content will be injected by profile.js based on points stage -->
+              </svg>
+            </div>
+
+            <div style="width: 100%; max-width: 480px; margin: 0 auto;">
+              <div class="flex-between" style="font-size: 0.85rem; font-weight: 700; color: var(--primary-green); margin-bottom: 4px;">
+                <span id="tree-stage-label">Status Pertumbuhan: Sapling</span>
+                <span id="tree-progress-pct">62% ke Pohon Rimbun</span>
+              </div>
+              <div class="progress-container" style="background-color: rgba(27, 107, 58, 0.1); height: 10px;">
+                <div class="progress-bar" id="tree-progress-bar" style="background-color: var(--primary-green);"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Points summary decks -->
+          <div class="eco-stats-deck">
+            <!-- 1. Eco points -->
+            <div class="eco-stat-item-card">
+              <div class="eco-stat-icon" style="background-color: var(--gold-reward-light); color: var(--gold-reward);">🪙</div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--gray-500); font-weight: 600;">Total Eco-Points</div>
+                <div style="font-size: 1.3rem; font-weight: 800; color: var(--deep-charcoal);" id="user-points-total">0 Poin</div>
+              </div>
+            </div>
+            
+            <!-- 2. Eco bin activity -->
+            <div class="eco-stat-item-card">
+              <div class="eco-stat-icon" style="background-color: var(--accent-lime-light); color: var(--primary-green);">🗑️</div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--gray-500); font-weight: 600;">Scan Smart Eco-Bin</div>
+                <div style="font-size: 1.3rem; font-weight: 800; color: var(--deep-charcoal);" id="user-scans-total">0 Kali</div>
+              </div>
+            </div>
+            
+            <!-- 3. Total Trip -->
+            <div class="eco-stat-item-card">
+              <div class="eco-stat-icon" style="background-color: var(--sky-blue-light); color: var(--sky-blue);">✈️</div>
+              <div>
+                <div style="font-size: 0.75rem; color: var(--gray-500); font-weight: 600;">Kunjungan E-Ticket</div>
+                <div style="font-size: 1.3rem; font-weight: 800; color: var(--deep-charcoal);" id="user-trips-total">0 Tiket</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- History tab panels -->
+          <div>
+            <div class="tabs">
+              <button class="tab-btn active" data-tab="tab-travel-history">Riwayat E-Tiket Perjalanan</button>
+              <button class="tab-btn" data-tab="tab-badges-history">Koleksi Badge Achievement</button>
+            </div>
+
+            <!-- Tab: Travel History (P1) -->
+            <div class="tab-pane active" id="tab-travel-history">
+              <div style="display: flex; flex-direction: column; gap: var(--space-2);" id="travel-history-list">
+                <!-- Travel bookings list injected dynamically -->
+              </div>
+            </div>
+
+            <!-- Tab: Achievements badges (P1) -->
+            <div class="tab-pane" id="tab-badges-history">
+              <div class="badges-collection-grid" id="achievements-badges-grid">
+                <!-- Badges injected dynamically -->
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

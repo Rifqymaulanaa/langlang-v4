@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <link rel="icon" type="image/png" href="logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Langlang — Jelajahi Indonesia yang Tersembunyi</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Langlang menghubungkan Anda dengan destinasi tersembunyi dan desa wisata di seluruh Indonesia. Pesan tiket, nikmati virtual tour 360°, berdonasi, dan dapatkan eco-points.">
+  <meta name="keywords" content="desa wisata, pariwisata indonesia, hidden gem indonesia, virtual tour 360, donasi wisata, eco-friendly travel">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+  
+  <!-- Custom Hero Section styles to match premium Airbnb/Traveloka aesthetic -->
+  <style>
+    .hero-container {
+      position: relative;
+      padding: var(--space-8) 0 var(--space-6) 0;
+      background: radial-gradient(circle at 80% 20%, rgba(111, 207, 61, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 10% 80%, rgba(27, 107, 58, 0.05) 0%, transparent 50%);
+      overflow: hidden;
+    }
+    
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background-color: var(--primary-green-light);
+      color: var(--primary-green);
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: var(--radius-full);
+      margin-bottom: var(--space-2);
+      border: 1px solid rgba(27, 107, 58, 0.15);
+      letter-spacing: 0.05em;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      line-height: 1.15;
+      font-weight: 800;
+      color: var(--deep-charcoal);
+      margin-bottom: var(--space-2);
+    }
+    
+    .hero-title span {
+      background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-lime) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--gray-600);
+      margin-bottom: var(--space-4);
+      max-width: 600px;
+    }
+
+    /* Autocomplete Search Bar */
+    .search-widget {
+      width: 100%;
+      max-width: 680px;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 10px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--gray-200);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-1);
+      position: relative;
+      margin-bottom: var(--space-3);
+    }
+
+    .search-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding-left: var(--space-2);
+    }
+
+    .search-icon-svg {
+      color: var(--primary-green);
+      position: absolute;
+      left: 12px;
+      pointer-events: none;
+    }
+
+    .search-widget input {
+      width: 100%;
+      border: none;
+      font-family: var(--font-body);
+      font-size: 1.05rem;
+      font-weight: 500;
+      padding: 12px var(--space-2) 12px 42px;
+      color: var(--deep-charcoal);
+      border-radius: var(--radius-lg);
+    }
+
+    .search-widget input:focus {
+      outline: none;
+      background-color: var(--gray-50);
+    }
+
+    /* Autocomplete Dropdown */
+    .search-autocomplete {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xl);
+      margin-top: 8px;
+      border: 1px solid var(--gray-200);
+      z-index: 100;
+      max-height: 320px;
+      overflow-y: auto;
+      display: none;
+      text-align: left;
+    }
+
+    .autocomplete-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--gray-100);
+      transition: var(--transition-fast);
+    }
+
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+
+    .autocomplete-item:hover {
+      background-color: var(--primary-green-light);
+    }
+
+    .autocomplete-name {
+      font-weight: 700;
+      color: var(--deep-charcoal);
+    }
+
+    .autocomplete-loc {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+    }
+
+    /* Weather Pintar Banner */
+    .weather-strip {
+      background: var(--deep-charcoal);
+      color: var(--white);
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .weather-marquee {
+      display: inline-flex;
+      animation: marquee 25s linear infinite;
+      gap: 32px;
+    }
+
+    .weather-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .weather-icon-inline {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+    }
+
+    .weather-status-green { color: var(--accent-lime); }
+    .weather-status-sky { color: var(--sky-blue); }
+    .weather-status-orange { color: var(--gold-reward); }
+
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* Stats Counter */
+    .stats-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+      padding: var(--space-4) 0;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-md);
+      margin-top: var(--space-4);
+    }
+
+    .stat-card {
+      text-align: center;
+      border-right: 1px solid var(--gray-200);
+      padding: var(--space-1) 0;
+    }
+
+    .stat-card:last-child {
+      border-right: none;
+    }
+
+    .stat-number {
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: var(--primary-green);
+      font-family: var(--font-display);
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--gray-500);
+      font-weight: 600;
+    }
+
+    /* Care Teaser Before-After */
+    .care-teaser-card {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      background: var(--white);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .care-images-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+    }
+
+    .care-img-box {
+      position: relative;
+      aspect-ratio: 4 / 3;
+    }
+
+    .care-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .care-img-label {
+      position: absolute;
+      bottom: var(--space-1);
+      left: var(--space-1);
+      background: rgba(0, 0, 0, 0.6);
+      color: var(--white);
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+    }
+
+    .care-teaser-info {
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+
+    /* Grid Fitur Unggulan */
+    .feature-grid-item {
+      background: var(--white);
+      border: 1px solid var(--gray-100);
+      padding: var(--space-3);
+      border-radius: var(--radius-lg);
+      transition: var(--transition-normal);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-grid-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+      border-color: var(--primary-green-light);
+    }
+
+    .feature-icon-box {
+      width: 48px;
+      height: 48px;
+      background: var(--primary-green-light);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-green);
+    }
+
+    .feature-icon-box svg {
+      width: 24px;
+      height: 24px;
+      stroke-width: 2;
+    }
+
+    .feature-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .feature-desc {
+      font-size: 0.9rem;
+      color: var(--gray-500);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .hero-title { font-size: 2.5rem; }
+      .search-widget { grid-template-columns: 1fr; padding: 6px; }
+      .search-widget button { width: 100%; margin-top: 4px; }
+      .stats-card-grid { grid-template-columns: repeat(3, 1fr); gap: var(--space-1); }
+      .stat-number { font-size: 2rem; }
+      .stat-label { font-size: 0.8rem; }
+      .care-teaser-card { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 2rem; }
+      .stats-card-grid { gap: 0; padding: var(--space-2) 0; }
+      .stat-card { padding: var(--space-1) var(--space-1); }
+      .stat-number { font-size: 1.75rem; }
+      .care-teaser-info { padding: var(--space-2); }
+      .care-images-compare { min-height: 160px; }
+      .care-img-box { aspect-ratio: 1/1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Placeholder (Injected by nav.js) -->
+  <div id="header-placeholder"></div>
+
+  <!-- AI Cuaca Pintar Banner -->
+  <div class="weather-strip" id="weather-banner-strip">
+    <div class="weather-marquee" id="weather-marquee-content">
+      <!-- Injected by home.js -->
+    </div>
+  </div>
+
+  <!-- Main Hero Section -->
+  <section class="hero-container">
+    <div class="container hero-content">
+      <div class="hero-badge animate-fade-in">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Mitra Desa Wisata SDGs Indonesia
+      </div>
+      
+      <h1 class="hero-title animate-slide-up">
+        Jelajahi Indonesia yang <br><span>Tersembunyi</span>
+      </h1>
+      
+      <p class="hero-subtitle animate-slide-up delay-1">
+        Temukan desa wisata eksotis, nikmati petualangan virtual 360°, pesan tiket transparan tanpa pungli, dan ikut berkontribusi langsung bagi pelestarian alam.
+      </p>
+
+      <!-- Autocomplete Search Bar Widget -->
+      <div class="search-widget animate-slide-up delay-2">
+        <div class="search-input-wrapper">
+          <svg class="search-icon-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="destination-search-input" placeholder="Cari Curug Cikaso, Wae Rebo, Penglipuran..." autocomplete="off">
+        </div>
+        <button class="btn btn-primary" id="search-cta-btn">Mulai Jelajah</button>
+        
+        <!-- Autocomplete Dropdown list -->
+        <div class="search-autocomplete" id="search-autocomplete-list">
+          <!-- Injected dynamically by home.js -->
+        </div>
+      </div>
+
+      <!-- Quick tags -->
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;" class="animate-slide-up delay-3">
+        <span style="font-size: 0.85rem; color: var(--gray-500); font-weight: 600; align-self: center; margin-right: 4px;">Populer:</span>
+        <a href="explore.html?type=Air+Terjun" class="badge badge-outline cursor-pointer hover-scale">Air Terjun</a>
+        <a href="explore.html?type=Budaya" class="badge badge-outline cursor-pointer hover-scale">Desa Adat</a>
+        <a href="explore.html?type=Pantai" class="badge badge-outline cursor-pointer hover-scale">Pantai</a>
+        <a href="explore.html?type=Hutan" class="badge badge-outline cursor-pointer hover-scale">Hutan Pinus</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Counters (P0) -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="stats-card-grid animate-slide-up delay-4" id="statistics-counter-section">
+        <div class="stat-card">
+          <div class="stat-number" id="stat-desa-wisata" data-target="6189">0</div>
+          <div class="stat-label">Desa Wisata</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-perjalanan" data-target="102">0</div>
+          <div class="stat-label">Juta Perjalanan Setahun</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="stat-digital" data-target="78">0%</div>
+          <div class="stat-label">Belum Digitalisasi</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Destinations (P0) -->
+  <section class="section" style="background-color: var(--white); border-top: 1px solid var(--gray-100);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Rekomendasi Terbaik</span>
+        <h2 class="section-title">Destinasi Pilihan Mingguan</h2>
+        <p class="section-desc">Eksplorasi keindahan alam otentik Indonesia dengan nilai wisata hijau berstandar tinggi.</p>
+      </div>
+
+      <div class="grid grid-3" id="featured-destinations-grid">
+        <!-- 6 Featured Cards will be loaded via home.js -->
+        <!-- Shimmer state initially -->
+        <div class="card">
+          <div class="skeleton skeleton-img"></div>
+          <div class="card-content">
+            <div class="skeleton skeleton-text" style="width: 30%"></div>
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-text"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="skeleton skeleton-img"></div>
+          <div class="card-content">
+            <div class="skeleton skeleton-text" style="width: 30%"></div>
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-text"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="skeleton skeleton-img"></div>
+          <div class="card-content">
+            <div class="skeleton skeleton-text" style="width: 30%"></div>
+            <div class="skeleton skeleton-title"></div>
+            <div class="skeleton skeleton-text"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex-center" style="margin-top: var(--space-4);">
+        <a href="explore.html" class="btn btn-secondary btn-lg">Lihat Semua Destinasi</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fitur Unggulan Section -->
+  <section class="section" style="background: linear-gradient(180deg, var(--warm-cream) 0%, rgba(255,255,255,0) 100%);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Inovasi Pariwisata</span>
+        <h2 class="section-title">Diferensiasi Utama Langlang</h2>
+        <p class="section-desc">Kami menggabungkan kemudahan teknologi dengan komitmen dampak sosial & lingkungan berkelanjutan.</p>
+      </div>
+
+      <div class="grid grid-3">
+        <!-- 1. Virtual Tour 360 -->
+        <div class="feature-grid-item">
+          <div class="feature-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Virtual Tour 360°</h3>
+          <p class="feature-desc">Rasakan suasana desa wisata langsung dari ponsel Anda sebelum melakukan perjalanan fisik ke lokasi.</p>
+        </div>
+
+        <!-- 2. Transparansi Anti Pungli -->
+        <div class="feature-grid-item">
+          <div class="feature-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">E-Ticketing Transparan</h3>
+          <p class="feature-desc">Harga tiket resmi tercatat, tanpa biaya tambahan liar di gerbang masuk. Dukung ekonomi langsung desa wisata.</p>
+        </div>
+
+        <!-- 3. Smart Eco-Bin -->
+        <div class="feature-grid-item">
+          <div class="feature-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Smart Eco-Bin Rewards</h3>
+          <p class="feature-desc">Buang botol plastik di tempat sampah khusus IoT kami di lokasi wisata, dapatkan poin digital otomatis.</p>
+        </div>
+
+        <!-- 4. AI Cuaca Pintar -->
+        <div class="feature-grid-item">
+          <div class="feature-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">AI Cuaca Pintar</h3>
+          <p class="feature-desc">Analisis cuaca lokal real-time dan forecast keselamatan 3 hari ke depan, lengkap dengan promo tiket khusus.</p>
+        </div>
+
+        <!-- 5. Kuota Harian Terjaga -->
+        <div class="feature-grid-item">
+          <div class="feature-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Kapasitas Daya Dukung</h3>
+          <p class="feature-desc">Pembatasan kuota kunjungan harian otomatis untuk menjaga kelestarian alam desa wisata dari overtourism.</p>
+        </div>
+
+        <!-- 6. Marketplace Lokal -->
+        <div class="feature-grid-item">
+          <div class="feature-icon-box">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Marketplace UMKM</h3>
+          <p class="feature-desc">Membeli produk kuliner dan kerajinan khas desa langsung dari produsen lokal asli, tersertifikasi ramah lingkungan.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Langlang Care Teaser (P1) -->
+  <section class="section" style="background-color: var(--white); border-top: 1px solid var(--gray-100); border-bottom: 1px solid var(--gray-100);">
+    <div class="container">
+      <div class="care-teaser-card">
+        <!-- Before / After Images slider -->
+        <div class="care-images-compare">
+          <div class="care-img-box">
+            <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80" alt="Sebelum Donasi">
+            <div class="care-img-label">Sebelum</div>
+          </div>
+          <div class="care-img-box">
+            <img src="https://images.unsplash.com/photo-1507652313519-d4e9174996dd?auto=format&fit=crop&w=600&q=80" alt="Sesudah Donasi">
+            <div class="care-img-label" style="background-color: var(--primary-green);">Dampak Nyata</div>
+          </div>
+        </div>
+        
+        <div class="care-teaser-info">
+          <span class="section-subtitle" style="text-align: left; margin-bottom: 0;">Langlang Care</span>
+          <h3 class="font-accent" style="font-size: 2.2rem; line-height: 1.2;">Donasi Anda Mengubah Kehidupan Desa Wisata</h3>
+          <p>
+            Di Langlang, sebagian keuntungan dan donasi bulat Anda disalurkan langsung untuk mendanai fasilitas umum yang higienis, pengolahan sampah modern, dan pemberdayaan guide lokal di desa wisata target.
+          </p>
+          <div style="margin: var(--space-1) 0;">
+            <div class="flex-between" style="font-size: 0.9rem; font-weight: 700; margin-bottom: 4px;">
+              <span>🚽 Sanitasi Bersih Cikaso</span>
+              <span style="color: var(--primary-green);">73% Terpenuhi</span>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" style="width: 73%;"></div>
+            </div>
+          </div>
+          <div>
+            <a href="care.html" class="btn btn-primary">Lihat Laporan Dampak & Donasi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Placeholder (Injected by nav.js) -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Core Javascript files -->
+  <script src="js/data.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/home.js"></script>
+
+</body>
+</html>
